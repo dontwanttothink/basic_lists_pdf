@@ -1,0 +1,253 @@
+\maketitle{}
+
+\section{Código fuente}
+
+Se implementaron estructuras de datos abstractas con representaciones concretas distintas, según los requisitos de la tarea. El código fuente está disponible en \url{https://github.com/dontwanttothink/basic_lists}.
+
+\section{Hipótesis}
+
+Se desarrollaron hipótesis sobre la complejidad de tiempo de las operaciones implementadas. En esta sección, tómese $n \in \{0, 1, 2, \dots{}\}$ como la cantidad de elementos en la lista al momento de la operación.
+
+\subsection{Listas enlazadas}
+
+Se implementó una estructura lineal basada en listas enlazadas con los métodos descritos en el documento.
+
+\begin{tcolorbox}[title=Importante]
+	Nótese que los métodos \texttt{erase}, \texttt{addBefore} y \texttt{addAfter} se consideraron como respectivamente tomando el nodo a eliminar, el nodo antes del cual agregar un elemento, y el nodo después del cual agregar un elemento. No se toma el valor en sí, lo que permite en ocasiones omitir una búsqueda lineal. (Véase la implementación.)
+\end{tcolorbox}
+
+\subsubsection{Lista simplemente enlazada, sin cola}
+
+\begin{table}[htbp]
+  \centering{}
+  \begin{tabular}{lccc}
+    \toprule
+    Operación & Peor caso & Caso promedio & Mejor caso \\
+    \midrule
+    \texttt{pushFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{pushBack} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (n)$ \\
+    \texttt{popFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popBack} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (n)$ \\
+    \texttt{find} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{erase} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{addBefore} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{addAfter} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resumen de las complejidades de tiempo para la lista simplemente enlazada, sin cola}
+  \label{tab:resumen-sin-cola}
+\end{table}
+
+\begin{description}
+	\item[pushFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque el flujo del algoritmo es idéntico para cualquier $n > 0$ y la cantidad de trabajo realizada es constante.
+	}
+	\item[pushBack]{
+		Se anticipa $\Theta{} (n)$ en cualquier caso, porque para cualquier $n > 0$ se ejecuta una cantidad de trabajo constante por cada elemento de la lista, más una pequeña cantidad de trabajo que es constante e independiente de $n$.
+	}
+	\item[popFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, por razones idénticas a las dadas para \texttt{pushFront}.
+	}
+	\item[popBack]{
+		Se anticipa $\Theta{} (n)$ en cualquier caso, porque para cualquier $n > 0$ se necesita realizar una cantidad constante de trabajo por cada elemento anterior al último, más una cantidad pequeña de tiempo constante e independiente de $n$.
+	}
+	\item[find]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, porque el flujo más costoso ocurre cuando el elemento está al final o no existe, y en aquel caso se realiza una cantidad de trabajo constante por cada elemento de la lista, más una cantidad de trabajo constante independiente de $n$.
+
+		Se anticipa $\Theta{} (1)$ en el mejor caso, porque el flujo menos costoso ocurre cuando el elemento es el primero, y en aquel caso se realiza solo una cantidad de trabajo constante.
+
+		Dado un elemento aleatorio de la lista, se anticipa $\Theta{} (n)$ en el caso promedio, porque la posición esperada del elemento es $\frac{n + 1}{2}$, y se realiza una cantidad de trabajo constante por cada elemento anterior al elemento que se busca, más una cantidad de trabajo constante e independiente de $n$.
+	}
+	\item[erase]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{find}, ya que se necesita encontrar el antecesor del nodo a eliminar.
+	}
+	\item[addBefore]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{find}.
+	}
+	\item[addAfter]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque para todo $n > 0$ se realiza una cantidad constante de trabajo para cualquier $n > 0$.
+	}
+	\item[isEmpty]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque la implementación consiste en una verificación simple de igualdad que requiere una cantidad constante de trabajo.
+	}
+\end{description}
+
+\subsubsection{Lista simplemente enlazada, con cola}
+
+\begin{table}[htbp]
+  \centering{}
+  \begin{tabular}{lccc}
+    \toprule
+    Operación & Peor caso & Caso promedio & Mejor caso \\
+    \midrule
+    \texttt{pushFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{pushBack} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popBack} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (n)$ \\
+    \texttt{find} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{erase} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{addBefore} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{addAfter} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resumen de las complejidades de tiempo para la lista simplemente enlazada, con cola}
+  \label{tab:resumen-con-cola}
+\end{table}
+
+\begin{description}
+	\item[pushFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque el flujo del algoritmo es idéntico para cualquier $n > 0$ y la cantidad de trabajo realizada es constante.
+	}
+	\item[pushBack]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso por razones idénticas a las dadas para \texttt{pushFront}, gracias al puntero de la cola.
+	}
+	\item[popFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso por razones idénticas a las dadas para \texttt{popFront} en la implementación anterior.
+	}
+	\item[popBack]{
+		Se anticipa $\Theta{} (n)$ en todos los casos, por razones idénticas a las dadas para \texttt{popBack} en la implementación anterior.
+	}
+	\item[find]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{find} en la implementación anterior.
+	}
+	\item[erase]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{erase} en la implementación anterior.
+	}
+	\item[addBefore]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{addBefore} en la implementación anterior.
+	}
+	\item[addAfter]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{addAfter} en la implementación anterior.
+	}
+	\item[isEmpty]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{isEmpty} en la implementación anterior.
+	}
+\end{description}
+
+\subsubsection{Lista doblemente enlazada, sin cola}
+
+\begin{table}[htbp]
+  \centering{}
+  \begin{tabular}{lccc}
+    \toprule
+    Operación & Peor caso & Caso promedio & Mejor caso \\
+    \midrule
+    \texttt{pushFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{pushBack} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (n)$ \\
+    \texttt{popFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popBack} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (n)$ \\
+    \texttt{find} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{erase} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{addBefore} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{addAfter} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resumen de las complejidades de tiempo para la lista doblemente enlazada, sin cola}
+  \label{tab:resumen-doble-sin-cola}
+\end{table}
+
+\begin{description}
+	\item[pushFront]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{pushFront} en la implementación anterior.
+	}
+	\item[pushBack]{
+		Se anticipa $\Theta{} (n)$ en todos los casos, porque siempre se ejecuta una cantidad constante de trabajo por cada elemento de la lista, más una pequeña cantidad de trabajo que es constante e independiente de $n$.
+	}
+	\item[popFront]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{pushFront}.
+	}
+	\item[popBack]{
+		Se anticipa $\Theta{} (n)$ en todos los casos, por razones idénticas a las dadas para \texttt{pushBack}.
+	}
+	\item[find]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (n)$ en el caso promedio, y $\Theta{} (1)$ en el mejor caso, por razones idénticas a las dadas para \texttt{find} en la implementación anterior.
+	}
+	\item[erase]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, porque se realiza siempre una cantidad constante de trabajo gracias al puntero hacia el elemento anterior.
+	}
+	\item[addBefore]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{erase}.
+	}
+	\item[addAfter]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{erase}.
+	}
+	\item[isEmpty]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{isEmpty} en la implementación anterior.
+	}
+\end{description}
+
+\subsubsection{Lista doblemente enlazada, con cola}
+
+\begin{table}[htbp]
+  \centering{}
+  \begin{tabular}{lccc}
+    \toprule
+    Operación & Peor caso & Caso promedio & Mejor caso \\
+    \midrule
+    \texttt{pushFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{pushBack} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popFront} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{popBack} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{find} & $\Theta{} (n)$ & $\Theta{} (n)$ & $\Theta{} (1)$ \\
+    \texttt{erase} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{addBefore} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{addAfter} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resumen de las complejidades de tiempo para la lista doblemente enlazada, con cola}
+  \label{tab:resumen-doble-con-cola}
+\end{table}
+
+\begin{description}
+	\item[pushFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque el flujo del algoritmo es idéntico para cualquier $n > 0$ y la cantidad de trabajo realizada es constante.
+	}
+	\item[pushBack]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso por razones idénticas a las dadas para \texttt{pushFront}, gracias al puntero de la cola.
+	}
+	\item[popFront]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso por razones idénticas a las dadas para \texttt{pushFront}.
+	}
+	\item[popBack]{
+		Se anticipa $\Theta{} (1)$ en cualquier caso por razones idénticas a las dadas para \texttt{pushBack}.
+	}
+	\item[find]{
+		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (n)$ en el caso promedio, y $\Theta{} (1)$ en el mejor caso, por razones idénticas a las dadas para \texttt{find} en la implementación anterior.
+	}
+	\item[erase]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{erase} en la implementación anterior.
+	}
+	\item[addBefore]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{addBefore} en la implementación anterior.
+	}
+	\item[addAfter]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{addAfter} en la implementación anterior.
+	}
+	\item[isEmpty]{
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{isEmpty} en la implementación anterior.
+	}
+\end{description}
+
+\subsection{Cola dinámica}
+
+Se implementó una cola usando un arreglo. Cuando el arreglo se llena, los elementos se copian a un arreglo nuevo con el doble de la capacidad. Cuando el arreglo tiene más de tres cuartos de su capacidad libre, los elementos se copian a un arreglo nuevo con la mitad de la capacidad.
+
+\subsection{Pila dinámica}
+
+La pila se implementó con un arreglo usando la misma estrategia de redimensionamiento que la cola.
+
+\section{Mediciones de tiempo}
+
+\subsection{Listas enlazadas}
+
+\subsection{Arreglo dinámico}
+
+\subsection{Cola dinámica}
+
+\subsection{Comparación entre los métodos análogos de las listas enlazadas y las colas y arreglos dinámicos}
+
+\section{Conclusiones}
