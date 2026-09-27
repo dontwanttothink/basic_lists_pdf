@@ -244,10 +244,17 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
     \toprule
     Operación & Peor caso & Mejor caso & Amortizado \\
     \midrule
-    \texttt{enqueue} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
-    \texttt{delete} & $\Theta{} ()$ & $\Theta{} ()$ & — \\
+    \texttt{enqueue} & $\Theta{} (n)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{dequeue} & $\Theta{} (n)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{front} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+    \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+    \texttt{size} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+    \texttt{delete} & $\Theta{} (n)$ & $\Theta{} (1)$ & ? \\
     \bottomrule
   \end{tabular}
+
+  \smallskip
+  {\footnotesize El análisis amortizado se realizó para \texttt{enqueue} y \texttt{dequeue} únicamente.}
   \caption{Resumen de las complejidades de tiempo para la cola dinámica}
   \label{tab:resumen-cola-dinámica}
 \end{table}
