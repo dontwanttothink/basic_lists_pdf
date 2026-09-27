@@ -176,7 +176,7 @@ Se implementó una estructura lineal basada en listas enlazadas con los métodos
 		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{erase}.
 	}
 	\item[addAfter]{
-		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{erase}.
+		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{addAfter} en la implementación anterior.
 	}
 	\item[isEmpty]{
 		Se anticipa $\Theta{} (1)$ en todos los casos, por razones idénticas a las dadas para \texttt{isEmpty} en la implementación anterior.
@@ -259,7 +259,7 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
     \end{tabular}
     \begin{tablenotes}[flushleft]
       \footnotesize
-      \item[a] El análisis amortizado se realizó para \texttt{enqueue} y \texttt{dequeue} únicamente.
+      \item[a] La complejidad promedio de tiempo de cada operación dada una secuencia de $j$ operaciones. El análisis amortizado se realizó para \texttt{enqueue} y \texttt{dequeue} únicamente.
     \end{tablenotes}
   \end{threeparttable}
   \caption{Resumen de las complejidades de tiempo para la cola dinámica}
@@ -282,9 +282,9 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
 	\item[dequeue]{
 		Tómese por $p$ la capacidad del arreglo.
 
-		En el peor caso, se anticipa $\Theta{}(n)$ porque se puede tener que $n - 1 \le \frac{p}{4}$; en ese caso, se redimensiona el arreglo, incurriendo en una cantidad de trabajo del orden de $n$.
+		En el peor caso, se anticipa $\Theta{}(n)$ porque se puede tener que $n - 1 \le \frac{p}{4}$ con $n > 1$; en ese caso, se redimensiona el arreglo, incurriendo en una cantidad de trabajo del orden de $n$.
 
-		Se anticipa $\Theta{}(1)$ en el mejor caso, porque, si $n - 1 > \frac{p}{4}$, solo se realiza una cantidad constante de trabajo.
+		Se anticipa $\Theta{}(1)$ en el mejor caso; por ejemplo, si $n - 1 > \frac{p}{4}$, solo se realiza una cantidad constante de trabajo.
 
 		Para una secuencia de $j \in \mathbb{Z}^{+}$ operaciones de \texttt{dequeue}, se anticipa una complejidad promedio de tiempo por operación de $\Theta{}(1)$ a través del razonamiento basado en una función de potencial que se encuentra al final de esta sección.
 	}
@@ -298,7 +298,7 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
 		Se anticipa $\Theta{}(1)$ porque se realiza una cantidad constante de trabajo invariablemente.
 	}
 	\item[delete]{
-		Se anticipa $\Theta{}(n)$ en el peor caso porque los flujos más costosos posibles requieren una cantidad de trabajo del orden de $n$. La implementación busca al elemento desde el principio; entonces, si el elemento a eliminar es el último, se realizará una cantidad constante de trabajo por cada elemento de la estructura. Si $n - 1$ es a lo más un cuarto de la capacidad del arreglo, se redimensionará, realizando otra vez una cantidad de trabajo del orden de $n$. Si se elimina un elemento en el medio de la cola, se mueven todos los elementos a la izquierda del elemento eliminado, lo que incurre también en una cantidad de trabajo del orden de $n$.
+		Se anticipa $\Theta{}(n)$ en el peor caso porque los flujos más costosos posibles requieren una cantidad de trabajo del orden de $n$. La implementación busca al elemento desde el principio; entonces, si el elemento a eliminar es el último, se realizará una cantidad constante de trabajo por cada elemento de la estructura. Si $n - 1$ es a lo más un cuarto de la capacidad del arreglo y $n > 1$, el arreglo es redimensionado, realizando otra vez una cantidad de trabajo del orden de $n$. Si se elimina un elemento en el medio de la cola, se mueven todos los elementos a la izquierda del elemento eliminado, lo que incurre también en una cantidad de trabajo del orden de $n$.
 
 		Un mejor caso ocurre cuando el elemento a eliminar es el primero y además $n - 1$ es mayor que un cuarto de la capacidad del arreglo. Se anticipa $\Theta{}(1)$ en ese caso, porque solo se realiza una cantidad de trabajo constante.
 	}
@@ -306,7 +306,7 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
 
 Se anticipa que una secuencia arbitraria de longitud $j > 0$ compuesta de \texttt{enqueue} y \texttt{dequeue} tenga una complejidad promedio de tiempo por operación de $\Theta{} (1)$, con la siguiente justificación:
 
-Sean $\left[D_i\right]_{i \in \{ 0, 1, 2, \dots, j\}}$ los estados de la estructura después de $i$ operaciones. Usando el método de potenciales, definimos
+Sean $\left[D_i\right]_{i \in \{ 0, 1, 2, \dots, j\}}$ los estados de la estructura \textit{después} de $i$ operaciones. Usando el método de potenciales, definimos
 $$
 	\Phi{}(D_i) = \begin{cases}
 		2\left(n - \frac{p}{2}\right) & \text{si } n > \frac{p}{2} \\
@@ -318,7 +318,7 @@ donde $n$ es el número de elementos en $D_i$ y $p$ es su capacidad.
 
 Entonces, se tiene que $\Phi{}(D_0) = 0$ porque la cola inicia sin elementos. Además, $\Phi{}(D_i)$ es no negativo para cualquier $i \in \{ 0, 1, 2, \dots, j\}$.
 
-Ahora consideramos el costo amortizado de cada operación en la secuencia. Otra vez, tomamos $n$ como el número de elementos en la cola. Si la $i$-ésima operación es del tipo \texttt{enqueue}, existen dos casos: puede haber redimensionamiento o no. Si el arreglo se redimensiona, tomamos el costo real como $n$. Por lo tanto, el costo amortizado está dado por
+Ahora consideramos el costo amortizado de cada operación en la secuencia. Otra vez, tomamos $n$ como el número de elementos en la cola $D_{i}$. Si la $i$-ésima operación es del tipo \texttt{enqueue}, existen dos casos: puede haber redimensionamiento o no. Si el arreglo se redimensiona, tomamos el costo real como $n$. Por lo tanto, el costo amortizado está dado por
 \begin{align*}
 	n + \Phi{}(D_{i}) &- \Phi{}(D_{i - 1}) \\
 	&= n + 2\left(n - \frac{2(n - 1)}{2}\right) - 2\left(n - 1 - \frac{n - 1}{2}\right) \\
@@ -359,7 +359,7 @@ La pila se implementó con un arreglo usando la misma estrategia de redimensiona
     \end{tabular}
     \begin{tablenotes}[flushleft]
       \footnotesize
-      \item[a] El análisis amortizado se realizó para \texttt{push} y \texttt{pop} únicamente.
+      \item[a] La complejidad promedio de tiempo de cada operación dada una secuencia de $j$ operaciones. El análisis amortizado se realizó para \texttt{push} y \texttt{pop} únicamente.
     \end{tablenotes}
   \end{threeparttable}
   \caption{Resumen de las complejidades de tiempo para la pila dinámica}
