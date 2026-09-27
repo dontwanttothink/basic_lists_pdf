@@ -391,13 +391,149 @@ El análisis amortizado dado para secuencias de operaciones de \texttt{enqueue} 
 
 \section{Mediciones de tiempo}
 
+Se ejecutaron los métodos de cada implementación
+
 \subsection{Listas enlazadas}
+
+\subsubsection{Lista simplemente enlazada, sin cola}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_sll_methods.pdf}
+  \caption{Tiempos de ejecución de cada método de la lista simplemente enlazada, sin cola}
+  \label{fig:list_sll_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_sll_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la lista simplemente enlazada, sin cola}
+  \label{fig:list_sll_overlay}
+\end{figure}
+
+\subsubsection{Lista simplemente enlazada, con cola}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_sllt_methods.pdf}
+  \caption{Tiempos de ejecución de cada método de la lista simplemente enlazada, con cola}
+  \label{fig:list_sllt_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_sllt_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la lista simplemente enlazada, con cola}
+  \label{fig:list_sllt_overlay}
+\end{figure}
+
+\subsubsection{Lista doblemente enlazada, sin cola}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_dll_methods.pdf}
+  \caption{Tiempos de ejecución de cada método de la lista doblemente enlazada, sin cola}
+  \label{fig:list_dll_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_dll_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la lista doblemente enlazada, sin cola}
+  \label{fig:list_dll_overlay}
+\end{figure}
+
+\subsubsection{Lista doblemente enlazada, con cola}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_dllt_methods.pdf}
+  \caption{Tiempos de ejecución de cada método de la lista doblemente enlazada, con cola}
+  \label{fig:list_dllt_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{list_dllt_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la lista doblemente enlazada, con cola}
+  \label{fig:list_dllt_overlay}
+\end{figure}
 
 \subsection{Arreglo dinámico}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{array_stack_methods.pdf}
+  \caption{Tiempos de ejecución de cada método del arreglo dinámico (pila)}
+  \label{fig:array_stack_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{array_stack_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos del arreglo dinámico (pila)}
+  \label{fig:array_stack_overlay}
+\end{figure}
+
 \subsection{Cola dinámica}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{array_queue_methods.pdf}
+  \caption{Tiempos de ejecución de cada método de la cola dinámica}
+  \label{fig:array_queue_methods}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{array_queue_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la cola dinámica}
+  \label{fig:array_queue_overlay}
+\end{figure}
+
 \subsection{Comparación entre los métodos análogos de las listas enlazadas y las colas y arreglos dinámicos}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{mystack_comparativa_push.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{push} (pila dinámica) y \texttt{pushBack} (lista enlazada simplemente con cola)}
+  \label{fig:mystack_comparativa_push}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{mystack_comparativa_pop.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{pop} (pila dinámica) y \texttt{popBack} (lista enlazada doblemente con cola)}
+  \label{fig:mystack_comparativa_pop}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{mystack_comparativa_delete.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{delete} (pila dinámica) y \texttt{find} + \texttt{erase} (lista enlazada simplemente sin cola)}
+  \label{fig:mystack_comparativa_delete}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{myqueue_comparativa_enqueue.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{enqueue} (cola dinámica) y \texttt{pushBack} (lista enlazada simplemente con cola)}
+  \label{fig:myqueue_comparativa_enqueue}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{myqueue_comparativa_dequeue.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{dequeue} (cola dinámica) y \texttt{popFront} (lista enlazada simplemente sin cola)}
+  \label{fig:myqueue_comparativa_dequeue}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{myqueue_comparativa_delete.pdf}
+  \caption{Comparación de los tiempos de ejecución de \texttt{delete} (cola dinámica) y \texttt{find} + \texttt{erase} (lista enlazada simplemente sin cola)}
+  \label{fig:myqueue_comparativa_delete}
+\end{figure}
 
 \section{Conclusiones}
 

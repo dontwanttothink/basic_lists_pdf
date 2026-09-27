@@ -143,7 +143,6 @@ def _method_names(spec: StructureData) -> tuple[str, ...]:
 def plot_list_methods(spec: StructureData, out_dir: Path) -> Path:
     """Every method of one linked-list implementation, one subplot per method."""
     fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(12, 9))
-    fig.suptitle(f"Cada método de la estructura List — {spec.title}", fontsize=13)
 
     for ax, method_name in zip(axes.flat, LIST_METHODS):
         xs, ys = _prep_points(spec.methods[method_name].points)
@@ -154,7 +153,7 @@ def plot_list_methods(spec: StructureData, out_dir: Path) -> Path:
     for ax in axes.flat[len(LIST_METHODS) :]:
         ax.axis("off")
 
-    fig.tight_layout(rect=(0, 0.02, 1, 0.96))
+    fig.tight_layout()
     return _save(fig, out_dir / f"list_{spec.key}_methods.pdf")
 
 
@@ -166,7 +165,6 @@ def plot_list_methods(spec: StructureData, out_dir: Path) -> Path:
 def plot_array_methods(spec: StructureData, out_dir: Path, accent: str = "C0") -> Path:
     """Every method of MyStack / MyQueue, one subplot per method."""
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(12, 7))
-    fig.suptitle(f"Métodos de la estructura — {spec.title}", fontsize=13)
 
     for ax, method_name in zip(axes.flat, _method_names(spec)):
         xs, ys = _prep_points(spec.methods[method_name].points)
@@ -218,7 +216,7 @@ def plot_array_methods(spec: StructureData, out_dir: Path, accent: str = "C0") -
         _prep_axes(ax, "ns")
         ax.legend(loc="upper left", fontsize=7, frameon=False)
 
-    fig.tight_layout(rect=(0, 0.02, 1, 0.96))
+    fig.tight_layout()
     return _save(fig, out_dir / f"array_{'stack' if spec.key == 's' else 'queue'}_methods.pdf")
 
 
@@ -231,10 +229,6 @@ def plot_overlay_methods(spec: StructureData, out_dir: Path) -> Path:
     """All methods of one implementation, superimposed on a single grid."""
     names = _method_names(spec)
     fig, ax = plt.subplots(figsize=(8, 6))
-    fig.suptitle(
-        spec.title,
-        fontsize=12,
-    )
 
     for idx, method_name in enumerate(names):
         color = _METHOD_CYCLE(idx % _METHOD_CYCLE.N)
@@ -285,7 +279,7 @@ def plot_overlay_methods(spec: StructureData, out_dir: Path) -> Path:
 
     _prep_axes(ax, "ns")
     ax.legend(loc="best", fontsize=8, frameon=False, ncol=2)
-    fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+    fig.tight_layout()
 
     if spec.key in ("s", "q"):
         stem = f"array_{'stack' if spec.key == 's' else 'queue'}_overlay"
@@ -309,17 +303,15 @@ def render_comparisons(
     outputs: list[Path] = []
 
     specs = (
-        ("mystack_comparativa.pdf", "Pila dinámica", "s", MYSTACK_PAIRS),
-        ("myqueue_comparativa.pdf", "Cola dinámica", "q", MYQUEUE_PAIRS),
+        ("mystack", "Pila dinámica", "s", MYSTACK_PAIRS),
+        ("myqueue", "Cola dinámica", "q", MYQUEUE_PAIRS),
     )
 
-    for fname, array_title, key, pairs in specs:
-        nrows, ncols = 3, 1
-        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(6, 10))
-        axes = axes.flat
-
+    for stem, array_title, key, pairs in specs:
         spec = all_data[key]
-        for ax, (arr_meth, lkey, lmeth) in zip(axes, pairs):
+        for arr_meth, lkey, lmeth in pairs:
+            fig, ax = plt.subplots(figsize=(6, 3.5))
+
             if spec.quick and arr_meth == spec.quick.name:
                 qx, qy = _prep_points(spec.quick.points)
                 ax.plot(
@@ -362,9 +354,8 @@ def render_comparisons(
 
             _prep_axes(ax, "ns")
             ax.legend(loc="upper left", fontsize=7, frameon=False)
-            ax.set_title(f"{arr_meth} y {lmeth}", fontsize=9)
 
-        fig.tight_layout(rect=(0, 0.02, 1, 0.96))
-        outputs.append(_save(fig, out_dir / fname))
+            fig.tight_layout()
+            outputs.append(_save(fig, out_dir / f"{stem}_comparativa_{arr_meth}.pdf"))
 
     return outputs
