@@ -66,7 +66,7 @@ Se implementó una estructura lineal basada en listas enlazadas con los métodos
 		Se anticipa $\Theta{} (n)$ en el peor caso, $\Theta{} (1)$ en el mejor caso, y $\Theta{} (n)$ en el caso promedio, por razones idénticas a las dadas para \texttt{find}.
 	}
 	\item[addAfter]{
-		Se anticipa $\Theta{} (1)$ en cualquier caso, porque para todo $n > 0$ se realiza una cantidad constante de trabajo para cualquier $n > 0$.
+		Se anticipa $\Theta{} (1)$ en cualquier caso, porque para todo $n > 0$ se realiza una cantidad constante de trabajo.
 	}
 	\item[isEmpty]{
 		Se anticipa $\Theta{} (1)$ en cualquier caso, porque la implementación consiste en una verificación simple de igualdad que requiere una cantidad constante de trabajo.
@@ -234,11 +234,104 @@ Se implementó una estructura lineal basada en listas enlazadas con los métodos
 
 \subsection{Cola dinámica}
 
-Se implementó una cola usando un arreglo. Cuando el arreglo se llena, los elementos se copian a un arreglo nuevo con el doble de la capacidad. Cuando el arreglo tiene más de tres cuartos de su capacidad libre, los elementos se copian a un arreglo nuevo con la mitad de la capacidad.
+Se implementó una cola usando un arreglo. El tamaño inicial del arreglo es 2. Cuando el arreglo se llena, los elementos se copian a un arreglo nuevo con el doble de la capacidad. Cuando el arreglo tiene tres cuartos de su capacidad libre y su capacidad es mayor a 2, los elementos se copian a un arreglo nuevo con la mitad de la capacidad.
+
+A diferencia de las listas enlazadas, tanto esta implementación como la siguiente considera al método \texttt{delete} como tomando el valor a eliminar en sí. Por lo tanto, ese método involucra una búsqueda lineal.
+
+\begin{table}[htbp]
+  \centering{}
+  \begin{tabular}{lccc}
+    \toprule
+    Operación & Peor caso & Mejor caso & Amortizado \\
+    \midrule
+    \texttt{enqueue} & $\Theta{} (1)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+    \texttt{delete} & $\Theta{} ()$ & $\Theta{} ()$ & — \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resumen de las complejidades de tiempo para la cola dinámica}
+  \label{tab:resumen-cola-dinámica}
+\end{table}
+
+\begin{description}
+	\item[enqueue]{
+		Considerando $n \in \{ 2^{a} \mid{} a \in \mathbb{N}) \}$, se anticipa $\Theta{} (n)$, porque se necesita redimensionar el arreglo, lo cual involucra una cantidad constante de trabajo por cada elemento. Vemos este como el peor caso.
+
+		Considerando $n \notin \{ 2^{a} \mid a \in \mathbb{N}\}$, se anticipa $\Theta{} (1)$, porque se hace una cantidad de trabajo constante. Vemos este como el mejor caso.
+
+		Para determinar la complejidad de tiempo armotizada de $j \in \mathbb{Z}^{+}$ operaciones de \texttt{enqueue}, observamos que realizamos una cantidad de trabajo del orden de $\Theta{}(j)$ en cada operación tal que $j \in \{2^a \mid a \in \mathbb{N}\}$, más una cantidad de trabajo de orden constante en todas las operaciones, necesaria para copiar el elemento nuevo dentro del arreglo. Por lo tanto, la cantidad de tiempo es del orden de
+		$$
+			j + \sum_{i = 1}^{\lfloor{}\log_{2}(j - 1)\rfloor{}} 2^{i} \text{.}
+		$$
+
+		La expresión $\sum_{i = 1}^{\lfloor{}\log_{2}(j - 1)\rfloor{}} 2^{i}$ es una serie geométrica igual a $2^{\lfloor{}\log_{2}(j - 1)\rfloor{} + 1} - 2 = \Theta{}(j)$. Entonces, se anticipa una complejidad por operación amortizada de $\frac{\Theta{}(n)}{n} = \Theta{}(1)$.
+	}
+	\item[dequeue]{
+		Se anticipa $\Theta{}(1)$ en el dominio $j \notin \{2^a \mid a \in \mathbb{N}\}$ y $\Theta{}(n)$ en el dominio $j \in \{2^a \mid a \in \mathbb{N}\}$ por razones idénticas a las dadas para \texttt{enqueue}.
+
+		Para una secuencia de $j \in \mathbb{Z}^{+}$ operaciones de \texttt{dequeue}, se anticipa una complejidad de tiempo amortizada de $\Theta{}(1)$ a través de un razonamiento análogo al dado para \texttt{enqueue}.
+	}
+	\item[front]{
+		Se anticipa $\Theta{}(1)$ porque se realiza una cantidad constante de trabajo para todo $n > 0$.
+	}
+	\item[isEmpty]{
+		Se anticipa $\Theta{}(1)$ porque se realiza una cantidad constante de trabajo invariablemente.
+	}
+	\item[size]{
+		Se anticipa $\Theta{}(1)$ porque se realiza una cantidad constante de trabajo invariablemente.
+	}
+	\item[delete]{
+		Se anticipa $\Theta{}(n)$ en el peor caso porque los flujos más costosos posibles requieren una cantidad de trabajo del orden de $n$. Por ejemplo, si el elemento a eliminar es el último, se realizará una cantidad constante de trabajo por cada elemento de la estructura. Si $n - 1$ es menos de un cuarto de la capacidad del arreglo, se redimensionará el arreglo, realizando otra vez una cantidad de trabajo del orden de $n$. Si se elimina un elemento en el medio de la cola, se necesitan mover todos los elementos a la izquierda o a la derecha, lo que incurre también una cantidad de trabajo del orden de $n$.
+
+		El mejor caso ocurre cuando el elemento a eliminar es el primero y además $n - 1$ no es menos que un cuarto de la capacidad del arreglo. Se anticipa $\Theta{}(1)$ en este caso, porque solo se realiza una cantidad de trabajo constante.
+	}
+\end{description}
+
+Se anticipa que una secuencia arbitraria de longitud $j > 0$ compuesta de \texttt{enqueue} y \texttt{dequeue} tenga una complejidad de tiempo por operación amortizada de $\Theta{} (1)$, con la siguiente justificación:
+
+Sean $\left[D_i\right]_{i \in \{ 0, 1, 2, \dots, j\}}$ los estados de la estructura después de $i$ operaciones. Usando el método de potenciales, definimos
+$$
+	\Phi{}(D_i) = \begin{cases}
+		2\left(n - \frac{p}{2}\right) & \text{si } n > \frac{p}{2} \\
+		\frac{p}{2} - n & \text{si } 0 < n \le \frac{p}{2} \\
+		0 & \text{si } n = 0 \\
+	\end{cases}
+$$
+donde $n$ es el número de elementos en $D_i$ y $p$ es su capacidad.
+
+Entonces, se tiene que $\Phi{}(D_0) = 0$ porque la cola inicia sin elementos. Además, $\Phi{}(D_i)$ es no negativo para cualquier $i \in \{ 0, 1, 2, \dots, j\}$.
+
+Ahora consideramos el costo amortizado de cada operación en la secuencia. Otra vez, tomamos $n$ como el número de elementos en la cola. Si la $i$-ésima operación es del tipo \texttt{enqueue}, existen dos casos: puede haber redimensionamiento o no. Si el arreglo se redimensiona, tomamos el costo real como $n$. Por lo tanto, el costo amortizado está dado por
+\begin{align*}
+	n + \Phi{}(D_{i}) &- \Phi{}(D_{i - 1}) \\
+	&= n + \left(n - \frac{2(n - 1)}{2}\right) - 2\left(n - 1 - \frac{n - 1}{2}\right) \\
+	&= n + \left(1\right) - \left(n - 1\right) \\
+	&= 2 = \Theta{}(1)
+\end{align*}
+ya que $p = n - 1$ inmediatamente antes de redimensionar y $p = 2(n - 1)$ después de redimensionar. Si el arreglo no se redimensiona, tomamos el costo real como 1 y notamos que el potencial cambia la mayor cantidad posible, dos unidades, cuando $n \ge \frac{p}{2}$\footnote{A partir de la definición de la función de potencial, se puede ver que el potencial disminuye una unidad si se ejecuta \texttt{pushBack} con $1 < n \le \frac{p}{2}$, aumenta dos unidades si $n > \frac{p}{2}$ y no cambia si $n = 1$.}, y entonces $1 + \Phi{}(D_{i}) - \Phi{}(D_{i - 1}) \le 1 + 2 = 3 = \Theta{}(1)$ también.
+
+Por el otro lado, si la $i$-ésima operación es del tipo \texttt{dequeue}, existen similarmente dos posibilidades: que el arreglo tenga que ser redimensionado o no. Si el arreglo se redimensiona, tomamos otra vez el costo real como $n$. Por lo tanto, el costo amortizado está dado por
+\begin{align*}
+	n + \Phi{}(D_{i}) &- \Phi{}(D_{i - 1}) \\
+	&= n + \left(\frac{2n}{2} - n\right) - \left(\frac{4n + 1}{2} - (n + 1)\right) \\
+	&= n + \left(0\right) - \left(n - \frac{1}{2}\right) \\
+	&= \frac{1}{2} = \Theta{}(1)
+\end{align*}
+ya que $p = 4n + 1$ inmediatamente antes de redimensionar y $p = 2n$ después de redimensionar. Si no hay redimensionamiento, entonces tomamos el costo real como $1$ y notamos que el potencial cambia cambia la mayor cantidad posible, dos unidades, cuando $n < \frac{p}{2}$\footnote{La justificación es simétrica.}, y entonces $1 + \Phi{}(D_{i}) - \Phi{}(D_{i - 1} \le 1 + 2 = 3 = \Theta{}(1)$ también.
+
+El costo amortizado de ambas operaciones es $\Theta{}(1)$ y por lo tanto el costo total amortizado de $j$ operaciones es $\Theta{}(j)$. Dado que $\Phi{}(D_i) \ge \Phi{}{D_0}$ para todo $i \in \{ 0, 1, 2, \dots{}, j\}$, el costo amortizado total de $j$ operaciones es igual o mayor al costo total real. Se deduce que el costo en el peor caso de $j$ operaciones sea entonces $O(j)$, y dado que cada operación tiene un costo real distinto de cero, se deduce también que el costo de $j$ operaciones sea $\Omega{}(j)$. Por lo tanto, se anticipa que el costo de $j$ operaciones sea $\Theta{}(j)$ y, equivalentemente, que el costo amortizado de cada operación sea $\Theta{}(1)$.
 
 \subsection{Pila dinámica}
 
-La pila se implementó con un arreglo usando la misma estrategia de redimensionamiento que la cola.
+La pila se implementó con un arreglo usando la misma estrategia de redimensionamiento que la cola dinámica.
+
+\begin{description}
+	\item[push]{}
+	\item[pop]{}
+	\item[peek]{}
+	\item[isEmpty]{}
+	\item[size]{}
+	\item[delete]{}
+\end{description}
 
 \section{Mediciones de tiempo}
 
@@ -251,3 +344,7 @@ La pila se implementó con un arreglo usando la misma estrategia de redimensiona
 \subsection{Comparación entre los métodos análogos de las listas enlazadas y las colas y arreglos dinámicos}
 
 \section{Conclusiones}
+
+\section*{Bibliografía}
+
+Cormen, T. H., Leiserson, C. E., Rivest, R. L., y Stein, C. (2022). \textit{Introduction to algorithms} (4.\textordfeminine{} ed.). MIT Press.
