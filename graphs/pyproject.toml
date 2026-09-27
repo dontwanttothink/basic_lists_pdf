@@ -1,0 +1,19 @@
+[project]
+name = "graphs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "dontwanttothink", email = "git@dontwanttoth.ink" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.2",
+]
+
+[project.scripts]
+graphs = "graphs:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
