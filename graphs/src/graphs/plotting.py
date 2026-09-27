@@ -182,7 +182,7 @@ def plot_array_methods(spec: StructureData, out_dir: Path, accent: str = "C0") -
                 color=accent,
                 label="sin redimensionamiento",
             )
-            # potencias de dos — outliers: pueden tocar crecer
+            # potencias de dos — peor caso: pueden tocar crecer
             ax.plot(
                 xs,
                 ys,
@@ -190,7 +190,7 @@ def plot_array_methods(spec: StructureData, out_dir: Path, accent: str = "C0") -
                 marker="x",
                 markersize=6,
                 color=accent,
-                label="potencias de dos (outliers)",
+                label="potencias de dos (peor caso)",
             )
             # promedio de las operaciones previas — amortizado
             # (comentado: las muestras no representan cada push del llenado)
@@ -251,7 +251,7 @@ def plot_overlay_methods(spec: StructureData, out_dir: Path) -> Path:
                 color=color,
                 label=f"{method_name}: sin redimensionamiento",
             )
-            # potencias de dos — outliers (pueden tocar crecer)
+            # potencias de dos — peor caso (pueden tocar crecer)
             ax.plot(
                 xs,
                 ys,
@@ -259,7 +259,7 @@ def plot_overlay_methods(spec: StructureData, out_dir: Path) -> Path:
                 marker="x",
                 markersize=6,
                 color=color,
-                label=f"{method_name}: potencias de dos (outliers)",
+                label=f"{method_name}: potencias de dos (peor caso)",
             )
             # promedio acumulado — comportamiento amortizado
             # (comentado: las muestras no representan cada push del llenado)
@@ -318,10 +318,38 @@ def render_comparisons(
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(6, 10))
         axes = axes.flat
 
+        spec = all_data[key]
         for ax, (arr_meth, lkey, lmeth) in zip(axes, pairs):
-            arr_series = all_data[key].methods[arr_meth]
-            xs, ys = _prep_points(arr_series.points)
-            ax.plot(xs, ys, marker="o", linewidth=1.5, color="C0", label=array_title)
+            if spec.quick and arr_meth == spec.quick.name:
+                qx, qy = _prep_points(spec.quick.points)
+                ax.plot(
+                    qx,
+                    qy,
+                    linewidth=1.5,
+                    markersize=2,
+                    color="C0",
+                    label=f"{array_title} · {arr_meth}: sin redimensionamiento",
+                )
+                xs, ys = _prep_points(spec.methods[arr_meth].points)
+                ax.plot(
+                    xs,
+                    ys,
+                    linestyle="none",
+                    marker="x",
+                    markersize=6,
+                    color="C0",
+                    label=f"{array_title} · {arr_meth}: potencias de dos (peor caso)",
+                )
+            else:
+                xs, ys = _prep_points(spec.methods[arr_meth].points)
+                ax.plot(
+                    xs,
+                    ys,
+                    marker="o",
+                    linewidth=1.5,
+                    color="C0",
+                    label=f"{array_title} · {arr_meth}",
+                )
 
             if lmeth == "find + erase":
                 lseries = delete_series_map.get(lkey)
