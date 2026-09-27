@@ -338,14 +338,52 @@ El costo amortizado de ambas operaciones es $O(1)$ y por lo tanto el costo total
 
 La pila se implementó con un arreglo usando la misma estrategia de redimensionamiento que la cola dinámica.
 
+\begin{table}[htbp]
+  \centering{}
+  \begin{threeparttable}
+    \begin{tabular}{lccc}
+      \toprule
+      Operación & Peor caso & Mejor caso & Amortizado\tnote{a} \\
+      \midrule
+      \texttt{push} & $\Theta{} (n)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+      \texttt{pop} & $\Theta{} (n)$ & $\Theta{} (1)$ & $\Theta{} (1)$ \\
+      \texttt{peek} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+      \texttt{isEmpty} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+      \texttt{size} & $\Theta{} (1)$ & $\Theta{} (1)$ & ? \\
+      \texttt{delete} & $\Theta{} (n)$ & $\Theta{} (n)$ & ? \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item[a] El análisis amortizado se realizó para \texttt{push} y \texttt{pop} únicamente.
+    \end{tablenotes}
+  \end{threeparttable}
+  \caption{Resumen de las complejidades de tiempo para la pila dinámica}
+  \label{tab:resumen-pila-dinámica}
+\end{table}
+
 \begin{description}
-	\item[push]{}
-	\item[pop]{}
-	\item[peek]{}
-	\item[isEmpty]{}
-	\item[size]{}
-	\item[delete]{}
+	\item[push]{
+		Por razones idénticas a las dadas para \texttt{enqueue} en la cola dinámica, se anticipa $\Theta{}(1)$ en el mejor caso, $\Theta{}(n)$ en el peor caso, y una complejidad de tiempo promedio de $\Theta{}(1)$ por operación dada una secuencia de $j \in \mathbb{Z}^{+}$ operaciones.
+	}
+	\item[pop]{
+		Se necesita una cantidad constante de trabajo excepto cuando se realiza un redimensionamiento. Por razones idénticas a las dadas para \texttt{dequeue} en la cola dinámica, se anticipa $\Theta{}(1)$ en el mejor caso y $\Theta{}(n)$ en el peor caso. Se anticipa una complejidad de tiempo promedio de $\Theta{}(1)$ por operación dada una secuencia de $j \in \mathbb{Z}^{+}$ operaciones, porque el análisis amortizado para la cola dinámica es aplicable también a la pila dinámica.
+	}
+	\item[peek]{
+		Para cualquier $n > 0$, se necesita una cantidad de trabajo constante. Por lo tanto, se anticipa $\Theta{}(1)$.
+	}
+	\item[isEmpty]{
+		Se necesita siempre una cantidad de trabajo constante; entonces, se anticipa $\Theta{}(1)$.
+	}
+	\item[size]{
+		Se anticipa $\Theta{}(1)$ por razones idénticas a las dadas para \texttt{isEmpty}.
+	}
+	\item[delete]{
+		Se anticipa $\Theta{}(n)$ en todos los casos, porque la búsqueda se debe hacer desde el principio y luego se necesitan mover todos los elementos que estén a la derecha del elemento eliminado. La búsqueda necesita una cantidad de trabajo constante por cada elemento a la izquierda del elemento a eliminar, y la traslación necesita una cantidad de trabajo constante por cada elemento restante a la derecha. También es posible que se necesite hacer un redimensionamiento, contribuyendo otra vez una cantidad de trabajo del orden de $n$.
+	}
 \end{description}
+
+El análisis amortizado dado para secuencias de operaciones de \texttt{enqueue} y \texttt{dequeue} en la cola dinámica es aplicable también a secuencias de operaciones de \texttt{push} y \texttt{pop} porque la estrategia de redimensionamiento es idéntica. Por lo tanto, se anticipa que una secuencia cualquiera de $j \in \mathbb{Z}^{+}$ operaciones de \texttt{push} y \texttt{pop} tenga una complejidad de tiempo de $\Theta{}(j)$ y por lo tanto la complejidad de tiempo promedio por operación sea $\Theta{}(1)$.
 
 \section{Mediciones de tiempo}
 
