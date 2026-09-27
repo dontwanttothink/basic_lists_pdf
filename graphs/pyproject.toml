@@ -1,8 +1,6 @@
 [project]
 name = "graphs"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
 authors = [
     { name = "dontwanttothink", email = "git@dontwanttoth.ink" }
 ]
