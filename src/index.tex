@@ -1,3 +1,5 @@
+% losing my mind
+
 \maketitle{}
 
 \tableofcontents{}
@@ -306,7 +308,7 @@ A diferencia de las listas enlazadas, tanto esta implementación como la siguien
 
 Se anticipa que una secuencia arbitraria de longitud $j > 0$ compuesta de \texttt{enqueue} y \texttt{dequeue} tenga una complejidad promedio de tiempo por operación de $\Theta{} (1)$, con la siguiente justificación:
 
-Sean $\left[D_i\right]_{i \in \{ 0, 1, 2, \dots, j\}}$ los estados de la estructura \textit{después} de $i$ operaciones. Usando el método de potenciales, definimos
+Sean $\left[D_i\right]_{i \in \{ 0, 1, 2, \dots, j\}}$ los estados de la estructura \emph{después} de $i$ operaciones. Usando el método de potenciales, definimos
 $$
 	\Phi{}(D_i) = \begin{cases}
 		2\left(n - \frac{p}{2}\right) & \text{si } n > \frac{p}{2} \\
@@ -339,6 +341,7 @@ ya que $p = 4n$ inmediatamente antes de redimensionar y $p = 2n$ después de red
 El costo amortizado de ambas operaciones es $O(1)$ y por lo tanto el costo total amortizado de $j$ operaciones es $O(j)$. Dado que $\Phi{}(D_i) \ge \Phi{}(D_0)$ para todo $i \in \{ 0, 1, 2, \dots{}, j\}$, el costo amortizado total de $j$ operaciones es igual o mayor al costo total real. Se deduce que el costo real en el peor caso de $j$ operaciones es entonces $O(j)$, y dado que cada operación tiene un costo real entero distinto de cero, se deduce también que el costo de $j$ operaciones es $\Omega{}(j)$. Por lo tanto, se anticipa que el costo de $j$ operaciones sea $\Theta{}(j)$ y, equivalentemente, que el costo promedio de cada operación en una secuencia de $j$ operaciones sea $\frac{\Theta{}(j)}{j} = \Theta{}(1)$.
 
 \subsection{Pila dinámica}
+\label{sec:stack}
 
 La pila se implementó con un arreglo usando la misma estrategia de redimensionamiento que la cola dinámica.
 
@@ -485,7 +488,7 @@ El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a
   \label{fig:array_stack_overlay}
 \end{figure}
 
-La pila dinámica es muy parecida a la cola dinámica. En la figura~\ref{fig:array_stack_overlay} se aprecia tanto el comportamiento lineal como el comportamiento constante del método \texttt{push}. En los poderes de dos, el arreglo tiene que copiarse, incurriendo en una cantidad de trabajo del orden de $n$. Las aspas azules muestran, otra vez, este fenómeno. Por el contrario, el resto de las mediciones para \texttt{push} muestran una cantidad de tiempo acotada y relativamente constante.
+La pila dinámica es muy parecida a la cola dinámica. En la figura~\ref{fig:array_stack_overlay} se aprecia tanto el comportamiento lineal como el comportamiento constante del método \texttt{push}. En los poderes de dos, el arreglo tiene que copiarse, incurriendo en una cantidad de trabajo del orden de $n$. Las aspas azules muestran este fenómeno. Se puede ver que el resto de las mediciones para \texttt{push} no aumentan con $n$.
 
 Ya que los puntos medidos no coincidían con los puntos de redimensionamiento para \texttt{pop}, solo se ven los tiempos de ejecución de su mejor caso.
 
@@ -502,12 +505,20 @@ El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a
   \label{fig:mystack_comparativa_push}
 \end{figure}
 
+La figura~\ref{fig:mystack_comparativa_push} muestra que el comportamiento del método \texttt{pushBack} de la lista simplemente enlazada con cola es similar al del método \texttt{push} de la pila dinámica, salvo cuando la pila dinámica necesita redimensionarse. Sin embargo, el método de la pila dinámica tarda significativamente menos en el mejor caso que el método de la lista enlazada.
+
+Se eligió la lista simplemente enlazada con cola para esta comparación porque ofrece una complejidad de tiempo de $\Theta{}(1)$ para \texttt{pushBack}, igual a la complejidad de tiempo promedio por operación de la operación \texttt{push} de la pila dinámica.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{mystack_comparativa_pop.pdf}
   \caption{Comparación de los tiempos de ejecución de \texttt{pop} (pila dinámica) y \texttt{popBack} (lista enlazada doblemente con cola)}
   \label{fig:mystack_comparativa_pop}
 \end{figure}
+
+La figura~\ref{fig:mystack_comparativa_pop} muestra que el comportamiento a medida que $n$ aumenta del método \texttt{pop} de la pila dinámica y del método \texttt{popBack} de la lista doblemente enlazada con cola es casi igual, al menos para los valores de $n$ medidos. Esta gráfica no incluye el peor caso para \texttt{pop} porque el redimensionamiento no es necesario excepto en las condiciones específicas descritas en la sección~\ref{sec:stack}, y estas condiciones no se dieron durante las pruebas.
+
+Se eligió la lista doblemente enlazada con cola porque ofrece una complejidad de tiempo de $\Theta{}(1)$ para esta operación, lo cual iguala la complejidad de tiempo en el mejor caso de la operación \texttt{pop} de la pila dinámica.
 
 \begin{figure}[htbp]
   \centering
@@ -516,12 +527,22 @@ El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a
   \label{fig:mystack_comparativa_delete}
 \end{figure}
 
+La figura~\ref{fig:mystack_comparativa_delete} permite comparar el rendimiento de la pila dinámica y la lista enlazada simplemente sin cola al eliminar un elemento aleatorio. Debido a que la lista enlazada necesita una referencia al nodo a eliminar, eliminar la primera ocurrencia de un \emph{elemento} dado requiere realizar una búsqueda lineal primero. Para aproximar el tiempo total de ambas operaciones, se sumaron las medidas del método \texttt{find} y el método \texttt{erase}.
+
+El resultado es consistente con el comportamiento esperado de $\Theta{}(n)$ para ambas rutinas.
+
+Se eligió una lista simplemente enlazada sin cola porque todas las implementaciones de listas tardan una cantidad de tiempo del orden de $n$ en buscar un elemento dado.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{myqueue_comparativa_enqueue.pdf}
   \caption{Comparación de los tiempos de ejecución de \texttt{enqueue} (cola dinámica) y \texttt{pushBack} (lista enlazada simplemente con cola)}
   \label{fig:myqueue_comparativa_enqueue}
 \end{figure}
+
+Parecido al caso de la pila dinámica, la figura~\ref{fig:myqueue_comparativa_enqueue} muestra que el comportamiento del método \texttt{pushBack} de la lista simplemente enlazada con cola es similar al del método \texttt{enqueue} de la cola dinámica, salvo cuando la cola dinámica necesita redimensionarse. Sin embargo, el método de la pila dinámica tarda significativamente menos en el mejor caso que el método de la lista enlazada.
+
+Se eligió la lista simplemente enlazada con cola porque ofrece una complejidad de tiempo de $\Theta{}(1)$ para \texttt{pushBack}, igual a la complejidad de tiempo promedio por operación de la operación \texttt{enqueue} de la cola dinámica.
 
 \begin{figure}[htbp]
   \centering
@@ -530,6 +551,10 @@ El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a
   \label{fig:myqueue_comparativa_dequeue}
 \end{figure}
 
+La figura~\ref{fig:myqueue_comparativa_dequeue} muestra que el comportamiento a medida que $n$ aumenta del método \texttt{dequeue} de la pila dinámica y del método \texttt{popFront} de la lista doblemente enlazada con cola es casi igual, al menos para los valores de $n$ medidos. Esta gráfica no incluye el peor caso para \texttt{dequeue} porque el redimensionamiento no es necesario excepto en las mismas condiciones específicas discutidas para la pila dinámica.
+
+Se eligió la lista doblemente enlazada con cola porque ofrece una complejidad de tiempo de $\Theta{}(1)$ para esta operación, lo cual iguala la complejidad de tiempo en el mejor caso de la operación \texttt{pop} de la cola dinámica.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{myqueue_comparativa_delete.pdf}
@@ -537,9 +562,23 @@ El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a
   \label{fig:myqueue_comparativa_delete}
 \end{figure}
 
+La figura~\ref{fig:myqueue_comparativa_delete} permite comparar el rendimiento de la cola dinámica y la lista simplemente enlazada sin cola al eliminar un elemento aleatorio. De nuevo, debido a que la lista enlazada necesita una referencia al nodo a eliminar, eliminar la primera ocurrencia de un \emph{elemento} dado requiere realizar una búsqueda lineal primero. Para aproximar el tiempo total de ambas operaciones, se sumaron las medidas del método \texttt{find} y el método \texttt{erase}.
+
+El resultado es consistente con el comportamiento esperado de $\Theta{}(n)$ para ambas rutinas.
+
+Se eligió una lista simplemente enlazada sin cola porque todas las implementaciones de listas tardan una cantidad de tiempo del orden de $n$ en buscar un elemento dado.
+
 \section{Conclusiones}
 
+En cuanto a las complejidades de tiempo promedio por operación, las listas enlazadas superan a los arreglos dinámicos solamente cuando se necesitan hacer inserciones en puntos arbitrarios de la lista. Cuando solo se realizan inserciones al inicio o al final, una lista doblemente enlazada con cola es superior a un arreglo dinámico únicamente cuando las pausas de redimensionamiento no son aceptables.
 
+Se escucha a menudo que las listas enlazadas no son apropiadas en la gran mayoría de las situaciones prácticas. Por ejemplo, la \href{https://doc.rust-lang.org/std/collections/struct.LinkedList.html}{librería estandar del lenguaje de programación Rust} advierte que ``es casi siempre mejor usar un Vec [pila dinámica] o un VecQueue [cola dinámica] porque los contenedores basados en arreglos son generalmente más rápidos, más eficientes en memoria, y hacen un mejor uso del caché del procesador.''
+
+Una cola dinámica puede ser útil en la practicidad para eficientemente modelar la lista de pedidos pendientes de un restaurante, porque las órdenes realizadas primero suelen empezar a prepararse antes que las órdenes realizadas después.
+
+Una lista doblemente enlazada puede ser necesaria en un sistema operativo cuando se necesite mantener una estructura lineal de datos pero no sea viable realizar las pausas significativas necesarias para redimensionar un arreglo dinámico. La variación en los tiempos individuales de ejecución al insertar elementos en un arreglo dinámico puede no ser aceptable, por ejemplo, dentro de una llamada al sistema que interrumpe al programa que la llama, porque los tiempos de pausa serían impredecibles y podrían causar problemas con tareas altamente interactivas, como la reproducción de audio.
+
+En resumen, las listas enlazadas tienen la ventaja de permitir inserciones del orden de $\Theta{}(1)$ en posiciones arbitrarias conocidas. También ofrecen operaciones con tiempos de ejecución predecibles y consistentes. Pero necesitan usar más memoria, no permiten acceder a una posición arbitraria de la lista en tiempo constante y pueden ser significativamente más lentas debido a que cada elemento se almacena en una dirección de memoria totalmente distinta, desaprovechando el caché. La ventaja de los arreglos dinámicos es no tener ninguno de esos problemas, pero se sacrifica la previsibilidad y la velocidad de la inserción en posiciones arbitrarias.
 
 \section*{Bibliografía}
 \addcontentsline{toc}{section}{Bibliografía}
