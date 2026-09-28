@@ -391,18 +391,19 @@ El análisis amortizado dado para secuencias de operaciones de \texttt{enqueue} 
 
 \section{Mediciones de tiempo}
 
-Se ejecutaron los métodos de cada implementación
+Se ejecutaron los métodos de cada implementación para ciertos $n$ desde $1$ hasta $2^{26} = 67\,108\,864$. En general, se tomaron mediciones de los métodos en cada poder de dos.
+
+Se tomaron mediciones adicionales para los métodos \texttt{push} y \texttt{enqueue} de las estructuras basadas en arreglos dinámicos para permitir observar el mejor caso. Los puntos de medición de estos métodos también fueron exponenciales, pero ocho veces más frecuentes. Es decir, se realizaron mediciones cada poder de $2^{\frac{1}{8}}$.
+
+Los métodos que reciben argumentos, como \texttt{find}, se ejecutaron con una entrada elegida aleatoriamente dentro de los elementos existentes de la estructura.
+
+Se repitió todo el proceso 20 veces y se tomaron solo los valores medios.
+
+Las mediciones se realizaron en nanosegundos, usando \texttt{System.nanoTime()}, porque era el mayor nivel de precisión disponible. Medir la cantidad de tiempo en milisegundos no era adecuado porque la mayoría de las mediciones tardó significativamente menos de un milisegundo.
 
 \subsection{Listas enlazadas}
 
 \subsubsection{Lista simplemente enlazada, sin cola}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{list_sll_methods.pdf}
-  \caption{Tiempos de ejecución de cada método de la lista simplemente enlazada, sin cola}
-  \label{fig:list_sll_methods}
-\end{figure}
 
 \begin{figure}[htbp]
   \centering
@@ -411,14 +412,13 @@ Se ejecutaron los métodos de cada implementación
   \label{fig:list_sll_overlay}
 \end{figure}
 
-\subsubsection{Lista simplemente enlazada, con cola}
+La figura~\ref{fig:list_sll_overlay} permite observar el crecimiento de los distintos tiempos de ejecución a medida que $n$ aumenta. Todos los resultados son consistentes con lo anticipado, excluyendo algo de ruido al inicio y al final.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{list_sllt_methods.pdf}
-  \caption{Tiempos de ejecución de cada método de la lista simplemente enlazada, con cola}
-  \label{fig:list_sllt_methods}
-\end{figure}
+Los métodos \texttt{isEmpty}, \texttt{popFront}, \texttt{pushFront} y \texttt{addAfter} no muestran una correlación con la cantidad de elementos en la estructura, lo cual obedece a la expectativa de $\Theta{}(1)$.
+
+Los demás métodos muestran una relación lineal clara, como también se había predecido. En particular, el rendimiento lineal de \texttt{addBefore} y \texttt{find} es esperado porque el nodo y el elemento, respectivamente, fueron escogidos aleatoriamente dentro de los elementos existentes de la lista.
+
+\subsubsection{Lista simplemente enlazada, con cola}
 
 \begin{figure}[htbp]
   \centering
@@ -427,14 +427,13 @@ Se ejecutaron los métodos de cada implementación
   \label{fig:list_sllt_overlay}
 \end{figure}
 
-\subsubsection{Lista doblemente enlazada, sin cola}
+La figura~\ref{fig:list_sllt_overlay} muestra los cambios que se esperaban al agregar un puntero hacia la cola.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{list_dll_methods.pdf}
-  \caption{Tiempos de ejecución de cada método de la lista doblemente enlazada, sin cola}
-  \label{fig:list_dll_methods}
-\end{figure}
+La única diferencia significativa es el rendimiento de \texttt{pushBack}, que ahora parece $\Theta{}(1)$, como era esperado. El puntero hacia la cola permite agregar un elemento al final de la lista sin necesidad de recorrerla toda.
+
+El resto de las operaciones también coinciden. Por ejemplo, otra vez vemos el crecimiento lineal de \texttt{popBack}; la línea es casi recta.
+
+\subsubsection{Lista doblemente enlazada, sin cola}
 
 \begin{figure}[htbp]
   \centering
@@ -443,14 +442,13 @@ Se ejecutaron los métodos de cada implementación
   \label{fig:list_dll_overlay}
 \end{figure}
 
-\subsubsection{Lista doblemente enlazada, con cola}
+La figura~\ref{fig:list_dll_overlay} muestra los comportamientos claramente lineales de \texttt{find}, \texttt{pushBack} y \texttt{popBack} que se anticipaban. Estos métodos necesitan realizar una iteración del orden de $n$.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{list_dllt_methods.pdf}
-  \caption{Tiempos de ejecución de cada método de la lista doblemente enlazada, con cola}
-  \label{fig:list_dllt_methods}
-\end{figure}
+Al mismo tiempo, el resto de los métodos muestran una línea casi recta. Por ejemplo, \texttt{erase} es ahora de tiempo constante, gracias al puntero hacia el elemento anterior.
+
+Las mediciones coinciden con todas las expectativas.
+
+\subsubsection{Lista doblemente enlazada, con cola}
 
 \begin{figure}[htbp]
   \centering
@@ -459,14 +457,26 @@ Se ejecutaron los métodos de cada implementación
   \label{fig:list_dllt_overlay}
 \end{figure}
 
-\subsection{Arreglo dinámico}
+La figura~\ref{fig:list_dllt_overlay} muestra un comportamiento lineal solo para \texttt{find}, mientras que el resto de las operaciones se mantienen más o menos iguales a medida que $n$ aumenta. Esto es idéntico a lo sugerido por el cuadro~\ref{tab:resumen-doble-con-cola}. La combinación de nodos doblemente enlazados y un puntero hacia la cola permite realizar casi todas las operaciones en tiempo constante, siempre que no sea necesario hacer una búsqueda primero.
+
+\subsection{Cola dinámica}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{array_stack_methods.pdf}
-  \caption{Tiempos de ejecución de cada método del arreglo dinámico (pila)}
-  \label{fig:array_stack_methods}
+  \includegraphics[width=\linewidth]{array_queue_overlay.pdf}
+  \caption{Tiempos de ejecución superpuestos de la cola dinámica}
+  \label{fig:array_queue_overlay}
 \end{figure}
+
+En la figura~\ref{fig:array_queue_overlay} se aprecia tanto el comportamiento lineal como el comportamiento constante del método \texttt{enqueue}. En los poderes de dos, el arreglo tiene que copiarse, incurriendo en una cantidad de trabajo del orden de $n$. Las aspas azules muestran este fenómeno. Por el contrario, el resto de las mediciones para \texttt{push} muestran una cantidad de tiempo acotada y relativamente constante.
+
+Ya que los puntos medidos no coincidían con los puntos de redimensionamiento para \texttt{dequeue}, solo se ven los tiempos de ejecución de su mejor caso.
+
+Como era esperado, \texttt{find} continúa tomando una cantidad de tiempo del orden de $n$, por las mismas razones que en las otras estructuras.
+
+El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a medida que aumenta $n$, que es lo que se anticipaba.
+
+\subsection{Pila dinámica}
 
 \begin{figure}[htbp]
   \centering
@@ -475,21 +485,13 @@ Se ejecutaron los métodos de cada implementación
   \label{fig:array_stack_overlay}
 \end{figure}
 
-\subsection{Cola dinámica}
+La pila dinámica es muy parecida a la cola dinámica. En la figura~\ref{fig:array_stack_overlay} se aprecia tanto el comportamiento lineal como el comportamiento constante del método \texttt{push}. En los poderes de dos, el arreglo tiene que copiarse, incurriendo en una cantidad de trabajo del orden de $n$. Las aspas azules muestran, otra vez, este fenómeno. Por el contrario, el resto de las mediciones para \texttt{push} muestran una cantidad de tiempo acotada y relativamente constante.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{array_queue_methods.pdf}
-  \caption{Tiempos de ejecución de cada método de la cola dinámica}
-  \label{fig:array_queue_methods}
-\end{figure}
+Ya que los puntos medidos no coincidían con los puntos de redimensionamiento para \texttt{pop}, solo se ven los tiempos de ejecución de su mejor caso.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{array_queue_overlay.pdf}
-  \caption{Tiempos de ejecución superpuestos de la cola dinámica}
-  \label{fig:array_queue_overlay}
-\end{figure}
+Una vez más, \texttt{find} continúa tomando una cantidad de tiempo del orden de $n$.
+
+El resto de las operaciones parece tomar una cantidad de tiempo que no aumenta a medida que aumenta $n$, que es lo que se anticipaba.
 
 \subsection{Comparación entre los métodos análogos de las listas enlazadas y las colas y arreglos dinámicos}
 
@@ -536,6 +538,8 @@ Se ejecutaron los métodos de cada implementación
 \end{figure}
 
 \section{Conclusiones}
+
+
 
 \section*{Bibliografía}
 \addcontentsline{toc}{section}{Bibliografía}
